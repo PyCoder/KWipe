@@ -1,0 +1,124 @@
+1.0.1:
+Fixed check_update()
+
+1.0.2
+Fixed getLinuxHDD()
+
+1.0.3
+self.version and self.URL moved to version.py
+kwipe.py and about.py use version.py to display version in Windowstitle and TextBrowser
+
+1.1
+Fixed check_update()
+Load Ui-Files directly with uic.loadUi()
+
+1.2
+Swaped from Old-Style to New-Style SIGNAL/SLOT
+
+1.3
+Fixed Qt.FocusPolicy
+Addeded QMessageDialog in onErase()
+Addeded new function checkPermission()
+Addeded ToolTip() with size for drive and partition in GB/MB
+Updated german translation
+
+1.3.1
+Changed ToolTip supports now TB/GB/MB
+Fixed some translation issues in checkUpdate()
+Added czech translation by Pavel Fric
+
+1.3.2
+Updated de_CH.ts, de_AT.ts, de_DE.ts
+Updated cs_CZ.ts by Pavel Fric
+Added Bruce Schneier Algorithm
+Added British HMG Standard 5 Algorithm
+Added Russian Ghost p50739-95 Algorithm
+Added NSA 130-2 Algorithm
+Added Canadian OPS II Algorithm
+
+2.0.0
+Changed algorithm part (Hexlyfi)
+Changed KWipe.ui
+Updated algorithm (now in Hex)
+Updated de_CH.ts, de_AT.ts, de_DE.ts
+Added ETA counter
+Added MB/s counter
+Added KWipe-2.0.sh
+Ported from Python 2 to Python 3
+Ported from PyQt4 to PyQt5
+
+2.0.1
+Made a "App-Dir-Stucture" (bin, share, docs)
+Changed KWipe-2.0.sh to KWipe.sh
+Replaced an old-style "f=open" with "with open"
+Fixed the missing "a" in Fabian Di Milia
+
+2.0.2
+Changed "getLinuxHDD()" with a faster/better/shorter function! (lsblk)
+
+2.0.3
+Fixed a bug in getLinuxHDD()
+
+2.0.4
+Changed code style
+Removed some old code
+Changed from write mb to bytes (so it really overwrites every byte)
+Updated translation
+percent no calculated in python, because QProgressbar has trouble with large numbers in PyQt (qint32)
+
+2.0.5
+Cleaned up the code
+Changed date in about.ui
+Removed some comments
+
+2.0.6
+Fixed the segmentation fault (path fix)
+
+2.0.7
+Fixed wrong icon-path for context menu
+Fixed for-loop (No space left on device)
+
+2.1.0
+Added model name in tooltip
+Added check if device is mounted and disable the disk in QTreeView
+Added a little debug output
+Fixed missing undeleted rest bytes
+Changed to pyparted new style for get_linux_hdd() // pypart will be removed!
+Changed create_device_Tree
+
+2.1.1
+Updated DE/AT/CH translation
+Removed czech translation
+Moved main.py to KWipe
+Changed path in KWipe.sh
+
+2.1.2
+Fixed qprogressbar.setRange(0,99) instead of qprogressbar(0,100)
+
+2.1.3
+Fixed new release number
+
+2.1.4
+Fixed copyright year
+Fixed Semaphore
+
+2.1.5
+Fixed an error in GUTMANN
+Changed the calculation for 1MB
+
+2.1.6
+Added russian translation
+Changed copyright date
+
+2.1.7
+Added romanian translation (be certain that Qt comes with romanian support: /usr/share/qt5/translations/qt_ro.qm)
+Changed kwipe.py
+
+2.1.8
+Changed on_erase now removes double entries at start.
+Changed on_rease now asks the security question only if the device is not already in the list
+Updated translation files
+
+2.2.0
+Added QFileSystemWatcher to automatically refresh the device tree (/dev/block)
+Changed get_partition_size() now uses lsblk instead of python-parted
