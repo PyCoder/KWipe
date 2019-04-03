@@ -125,3 +125,6 @@ Changed get_partition_size() now uses lsblk instead of python-parted
 
 2.2.1
 Added github and enabled check_update()
+
+2.2.2
+Removed debug print()
