@@ -3,7 +3,7 @@
 
 Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
-##### Supported Wipe-Modes:
+###### Supported Wipe-Modes:
 - One
 - Zero
 - DOD
