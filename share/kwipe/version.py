@@ -17,5 +17,5 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-VERSION = '2.2.0'
-URL = 'http://doesntexistanymore/stuff/Linux/Applications/KWipe/release.txt'
+VERSION = '2.2.1'
+URL = 'https://raw.githubusercontent.com/PyCoder/KWipe/master/release.md'

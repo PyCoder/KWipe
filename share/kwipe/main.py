@@ -59,7 +59,7 @@ class KWipe(QtWidgets.QMainWindow):
         self.check_permission()
         self.create_action_menu()
         self.create_device_tree()
-        #self.check_update() # Home Page Offline
+        self.check_update()
 
         # Setup Window Title
         text = 'KWipe %s' % VERSION
@@ -274,11 +274,11 @@ class KWipe(QtWidgets.QMainWindow):
 
     def check_update(self):
         try:
-            new_version = urllib.request.urlopen(URL).read()[:-1]
-            if VERSION < new_version.decode():
+            release = urllib.request.urlopen(URL).read()[:-1].decode()
+            if VERSION < release:
                 QtWidgets.QMessageBox.information(self, self.tr('Update available!'),
                     self.tr('''<center><b>KWipe v%s available!</b><br>Please visit:<br>
-                    <a href=http://2blabla.ch> http://2blabla.ch</a></center>''') % new_version, QtWidgets.QMessageBox.Close)
+                    <a href=https://github.com/PyCoder/KWipe> https://github.com/PyCoder/KWipe</a></center>''') % release, QtWidgets.QMessageBox.Close)
         except (urllib.error.URLError, urllib.error.HTTPError):
             pass
 
