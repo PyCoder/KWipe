@@ -134,3 +134,6 @@ Changed ghost to gost
 
 2.2.4
 Added github url in about.ui
+
+2.2.5
+Changed release.md to REALSE
