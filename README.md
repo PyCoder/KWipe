@@ -6,13 +6,26 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 Supported Wipe-Modes:
 - One
 - Zero
-- DOD, DOD-E, VSITR, Gutman, Bruce Schneier, Britisch HMG Standard 5, Russian Ghost p50739-95, NSA 130-2, Canadian OPS II 
+- DOD
+- DOD-E
+- VSITR
+- Gutman
+- Bruce Schneier
+- Britisch HMG Standard 5
+- Russian Ghost p50739-95
+- NSA 130-2
+- Canadian OPS II 
 
 Supported Language:
-English, German, Czech, Romanian
+- English
+- German
+- Czech
+- Romanian
 
 Deps:
-Python3, PyQt5, util-linux (lsblk)
+- Python3
+- PyQt5
+- util-linux (lsblk)
 
 
 Tested with:
