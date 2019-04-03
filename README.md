@@ -33,5 +33,4 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 
 
 ##### INFO:
-Some recovery-tools can show you a "false-positive" result on NTFS, if you wipe only the NTFS partition and not the whole disk.
-This is, because tools like Recurva read the still existing MFT of NTFS! 
+Some recovery tools can show you a "false-positive" result, caused by the still existing MFT if you only overwrite the partition and not the whole disk!
