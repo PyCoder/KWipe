@@ -17,5 +17,5 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-VERSION = '2.2.1'
+VERSION = '2.2.2'
 URL = 'https://raw.githubusercontent.com/PyCoder/KWipe/master/release.md'

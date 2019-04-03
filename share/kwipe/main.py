@@ -310,7 +310,6 @@ class Thread(QtCore.QThread):
         self.algo = algo
         self.device = device
         self.size = size
-        print(self.size, self.device)
         self.semaphore = QtCore.QSemaphore(1)
    
     def run(self):
