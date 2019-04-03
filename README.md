@@ -12,7 +12,7 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 - Gutman
 - Bruce Schneier
 - Britisch HMG Standard 5
-- Russian Ghost p50739-95
+- Russian Gost p50739-95
 - NSA 130-2
 - Canadian OPS II 
 
