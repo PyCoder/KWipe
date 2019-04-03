@@ -21,6 +21,7 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 - German
 - Czech
 - Romanian
+- Russian
 
 ##### Deps:
 - Python3
