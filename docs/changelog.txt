@@ -122,3 +122,6 @@ Updated translation files
 2.2.0
 Added QFileSystemWatcher to automatically refresh the device tree (/dev/block)
 Changed get_partition_size() now uses lsblk instead of python-parted
+
+2.2.1
+Added github and enabled check_update()
