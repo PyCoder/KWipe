@@ -4,7 +4,8 @@ KWipe is a secure erase (wipe) application, completely written in PyQt5!
 Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
 Supported Wipe-Modes:
-One, Zero, DOD, DOD-E, VSITR, Gutman, Bruce Schneier, Britisch HMG Standard 5, Russian Ghost p50739-95, NSA 130-2, Canadian OPS II 
+One, 
+Zero, DOD, DOD-E, VSITR, Gutman, Bruce Schneier, Britisch HMG Standard 5, Russian Ghost p50739-95, NSA 130-2, Canadian OPS II 
 
 Supported Language:
 English, German, Czech, Romanian
