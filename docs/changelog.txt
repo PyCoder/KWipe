@@ -131,3 +131,6 @@ Removed debug print()
 
 2.2.3
 Changed ghost to gost
+
+2.2.4
+Added github url in about.ui
