@@ -1,5 +1,5 @@
 # KWipe
-KWipe is a secure erase (wipe) application, completely written in PyQt5!
+## KWipe is a secure erase (wipe) application, completely written in PyQt5!
 
 Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
