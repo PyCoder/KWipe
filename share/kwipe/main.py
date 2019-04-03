@@ -36,7 +36,7 @@ class KWipe(QtWidgets.QMainWindow):
     ONE = [_ONE]
     ZERO = [_ZERO]
     NSA_130_2 = ['random','random']    
-    GHOST =[_ZERO, 'random',  'random']
+    GOST =[_ZERO, 'random',  'random']
     HMG_IS_5 = [_ZERO, _ONE, 'random']
     DOD_E = [_ZERO, _ONE, 'random']
     DOD_ECE = [_ZERO, 'random', _ONE, 'random', _ZERO, 'random', _ZERO]
@@ -67,7 +67,7 @@ class KWipe(QtWidgets.QMainWindow):
 
         # Setup QComboBox, Spacer and Label
         self.comboMethod = QtWidgets.QComboBox()
-        self.comboMethod.addItems(['One', 'Zero', 'NSA 130-2', 'Ghost', 'HMG IS 5', 'DOD_E', 'DOD_ECE','OPS II', 'VSITR', 'Schneier', 'Gutman'])
+        self.comboMethod.addItems(['One', 'Zero', 'NSA 130-2', 'Gost', 'HMG IS 5', 'DOD_E', 'DOD_ECE','OPS II', 'VSITR', 'Schneier', 'Gutman'])
         spacer = QtWidgets.QWidget(self.toolBar)
         spacer.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Preferred)
         self.toolBar.addWidget(spacer)
@@ -126,7 +126,7 @@ class KWipe(QtWidgets.QMainWindow):
                         algo = self.NSA_130_2
                         passItem.setText('0/2')
                     elif self.comboMethod.currentIndex() == 3:
-                        algo = self.GHOST
+                        algo = self.GOST
                         passItem.setText('0/3')
                     elif self.comboMethod.currentIndex() == 4:
                         algo = self.HMG_IS_5

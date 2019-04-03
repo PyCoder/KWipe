@@ -128,3 +128,6 @@ Added github and enabled check_update()
 
 2.2.2
 Removed debug print()
+
+2.2.3
+Changed ghost to gost
