@@ -28,25 +28,21 @@ _DEBUG = False
 _MEGABYTE = 1048576
 
 class KWipe(QtWidgets.QMainWindow):
-    # Zero and one in 1 KiB
-    _ZERO = '00000000'
-    _ONE = 'FFFFFFFF'
-
     # Algorithm
-    ONE = [_ONE]
-    ZERO = [_ZERO]
-    NSA_130_2 = ['random','random']    
-    GOST =[_ZERO, 'random',  'random']
-    HMG_IS_5 = [_ZERO, _ONE, 'random']
-    DOD_E = [_ZERO, _ONE, 'random']
-    DOD_ECE = [_ZERO, 'random', _ONE, 'random', _ZERO, 'random', _ZERO]
-    CANADIAN_OPS_II = [_ZERO, _ONE, _ZERO, _ONE, _ZERO, _ONE, 'random']
-    VSITR = [_ZERO, _ONE, _ZERO, _ONE, _ZERO, _ONE, 'random']
-    BRUCE_SCHNEIER = [_ONE, _ZERO, 'random', 'random', 'random', 'random', 'random']
-    GUTMAN = ['random', 'random', 'random', 'random', '55555555', 'AAAAAAAA', '92492424', '49249292', '24924949',
+    ONE = ('00000000',)
+    ZERO = ('FFFFFFFF',)
+    NSA_130_2 = ('random','random')
+    GOST =(ZERO[0], 'random',  'random')
+    HMG_IS_5 = (ZERO[0], ONE[0], 'random')
+    DOD_E = (ZERO[0], ONE[0], 'random')
+    DOD_ECE = (ZERO[0], 'random', ONE[0], 'random', ZERO[0], 'random', ZERO)
+    CANADIAN_OPS_II = [ZERO[0], ONE[0], ZERO[0], ONE[0], ZERO[0], ONE[0], 'random']
+    VSITR = (ZERO[0], ONE[0], ZERO[0], ONE[0], ZERO[0], ONE[0], 'random')
+    BRUCE_SCHNEIER = (ONE[0], ZERO[0], 'random', 'random', 'random', 'random', 'random')
+    GUTMAN = ('random', 'random', 'random', 'random', '55555555', 'AAAAAAAA', '92492424', '49249292', '24924949',
            'FFFFFFFF', '11111111', '22222222', '33333333', '44444444', '55555555', '66666666', '77777777', '88888888', '99999999', 'AAAAAAAA', 'BBBBBBBB', 'CCCCCCCC',
               'DDDDDDDD', 'EEEEEEEE', '00000000', '92492424', '49249292', '24924949', '6DB6DBDB', 'B6DB6D6D', 'DB6DB6B6',
-              'random', 'random', 'random', 'random']
+              'random', 'random', 'random', 'random')
     
     # Ugly hack dic
     control_list = {}
