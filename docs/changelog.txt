@@ -140,3 +140,6 @@ Changed release.md to REALSE
 
 2.2.6
 Changed list to tuple for the algorithm part to save memory.
+
+2.2.7
+Changed the "ETA part" (blackpantherOS patch)
