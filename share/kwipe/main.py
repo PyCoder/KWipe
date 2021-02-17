@@ -397,6 +397,8 @@ class Thread(QtCore.QThread):
 
                     # Start again and emit pass
                     f.seek(0)
+                    if not self.terminated: ## Workaround for the moment
+                        self.position = 0
                     self.current_round += 1
                     self.current_pass.emit(str(self.current_round) + '/' + str(len(self.algo)))
                 else:
