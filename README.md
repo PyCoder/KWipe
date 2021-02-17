@@ -5,7 +5,7 @@
 
 
 ### 3.0 Released with new features!
-- Direct download ---> https://github.com/PyCoder/KWipe/releases/tag/3.0.0
+- Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.0/KWipe-3.0.0.tar.xz
 
 #### New features
 - Pause and resume
@@ -45,3 +45,4 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Implement verify
 - Implement change language (settings)
 - Clean messy code
+- Make package with flatpak
