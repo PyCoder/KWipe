@@ -1,4 +1,4 @@
-# version.py
+# donate.py
 #
 # Copyright (C) 2012 - 2021 Fabian Di Milia, All rights reserved.
 #
@@ -17,5 +17,22 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-VERSION = '3.0.0'
-URL = 'https://raw.githubusercontent.com/PyCoder/KWipe/master/RELEASE'
+from PyQt5 import QtWidgets
+from PyQt5 import uic
+import os
+import sys
+
+# Modification for PyInstaller
+bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+path_to_files = os.path.abspath(os.path.join(bundle_dir))
+
+class showDonate(QtWidgets.QDialog):
+    def __init__(self):
+        QtWidgets.QDialog.__init__(self)
+        self.ui = uic.loadUi(path_to_files+'/Ui/donate.ui', self)
+
+        # Setup signal and slots
+        self.pushButton.clicked.connect(self.copy)
+
+    def copy(self):
+        QtWidgets.QApplication.clipboard().setText(self.lineEdit.text())

@@ -1,6 +1,6 @@
 # main.py
 #
-# Copyright (C) 2012 - 2020  Fabian Di Milia, All rights reserved.
+# Copyright (C) 2012 - 2021  Fabian Di Milia, All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,40 +17,46 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-from PyQt5 import QtGui, QtCore, QtWidgets, Qt, uic
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import uic
+from datetime import datetime, timedelta
 from about import showAbout
 from version import VERSION, URL
-from os import urandom
-from datetime import datetime, timedelta
-import urllib.request, urllib.error, os, binascii, subprocess, json, re
+from settings import showSettings
+from donate import showDonate
+import urllib.request
+import urllib.error
+import os
+import sys
+import utils
 
+# Modification for PyInstaller
+bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+path_to_files = os.path.abspath(os.path.join(bundle_dir))
+
+## TODO IMPORTANT!!!
+"""
+Clean the messy code!
+Make make the functions shorter!!!
+Rename some variables (awful names!!)
+implement verify
+make translations
+Multi selection
+Stop / Start all
+"""
 _DEBUG = False
 _MEGABYTE = 1048576
 
 class KWipe(QtWidgets.QMainWindow):
-    # Algorithm
-    ONE = ('00000000',)
-    ZERO = ('FFFFFFFF',)
-    NSA_130_2 = ('random','random')
-    GOST =(ZERO[0], 'random',  'random')
-    HMG_IS_5 = (ZERO[0], ONE[0], 'random')
-    DOD_E = (ZERO[0], ONE[0], 'random')
-    DOD_ECE = (ZERO[0], 'random', ONE[0], 'random', ZERO[0], 'random', ZERO)
-    CANADIAN_OPS_II = [ZERO[0], ONE[0], ZERO[0], ONE[0], ZERO[0], ONE[0], 'random']
-    VSITR = (ZERO[0], ONE[0], ZERO[0], ONE[0], ZERO[0], ONE[0], 'random')
-    BRUCE_SCHNEIER = (ONE[0], ZERO[0], 'random', 'random', 'random', 'random', 'random')
-    GUTMAN = ('random', 'random', 'random', 'random', '55555555', 'AAAAAAAA', '92492424', '49249292', '24924949',
-           'FFFFFFFF', '11111111', '22222222', '33333333', '44444444', '55555555', '66666666', '77777777', '88888888', '99999999', 'AAAAAAAA', 'BBBBBBBB', 'CCCCCCCC',
-              'DDDDDDDD', 'EEEEEEEE', '00000000', '92492424', '49249292', '24924949', '6DB6DBDB', 'B6DB6D6D', 'DB6DB6B6',
-              'random', 'random', 'random', 'random')
-    
     # Ugly hack dic
     control_list = {}
-    
-    def __init__(self):       
+
+    def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
-        self.ui = uic.loadUi('../share/Ui/kwipe.ui', self)
-        
+        self.ui = uic.loadUi(path_to_files+'/Ui/kwipe.ui', self)
+
         # Start functions 
         self.check_permission()
         self.create_action_menu()
@@ -58,12 +64,12 @@ class KWipe(QtWidgets.QMainWindow):
         self.check_update()
 
         # Setup Window Title
-        text = 'KWipe %s' % VERSION
+        text = 'KWipe {}'.format(VERSION)
         self.setWindowTitle(text)
 
         # Setup QComboBox, Spacer and Label
         self.comboMethod = QtWidgets.QComboBox()
-        self.comboMethod.addItems(['One', 'Zero', 'NSA 130-2', 'Gost', 'HMG IS 5', 'DOD_E', 'DOD_ECE','OPS II', 'VSITR', 'Schneier', 'Gutman'])
+        self.comboMethod.addItems(utils.read_config('algorithm').sections())
         spacer = QtWidgets.QWidget(self.toolBar)
         spacer.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Preferred)
         self.toolBar.addWidget(spacer)
@@ -77,260 +83,289 @@ class KWipe(QtWidgets.QMainWindow):
         self.action_refresh.triggered.connect(self.create_device_tree)
         self.action_clear.triggered.connect(self.on_clear)
         self.action_about.triggered.connect(self.about)
+        self.action_settings.triggered.connect(self.settings)
+        self.action_donate.triggered.connect(self.donate)
 
         # Setup filesystem watcher for block devices
-        fs_watcher = QtCore.QFileSystemWatcher(['/dev/block'], self)
-        fs_watcher.directoryChanged.connect(self.create_device_tree)
+        fs_watcher = QtCore.QFileSystemWatcher(['/dev/block', path_to_files+'/config/settings.conf', path_to_files+'/config/algorithm.conf'], self)
+        fs_watcher.directoryChanged.connect(self.reload_config)
+        fs_watcher.fileChanged.connect(self.reload_config)
+
+    def reload_config(self):
+        self.create_device_tree()
+        self.create_combobox()
+
+    def create_combobox(self):
+        self.comboMethod.clear()
+        self.comboMethod.addItems(utils.read_config('algorithm').sections())
 
     def on_erase(self):
-        if self.treeWidget.currentItem():
-            # Set device
-            device = str(self.treeWidget.currentItem().text(0))
+        if self.deviceTableWidget.currentRow() >= 0:
+            device = self.deviceTableWidget.item(self.deviceTableWidget.currentRow(), 0).text()
+            serial = self.deviceTableWidget.item(self.deviceTableWidget.currentRow(), 2).text()
 
-            if device not in self.control_list:
+            # Check if the device is protected ## TODO ugly should be its own function!
+            if serial not in utils.read_config('settings')['locked']:
+                if device not in self.control_list:
+                    # Security Question
+                    ret = QtWidgets.QMessageBox.warning(self, self.tr('Warning!'),
+                                                        self.tr('You are about to erase %s.\n'
+                                                                'Are you sure, you want to proceed?') % device,
+                                                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                    if ret == QtWidgets.QMessageBox.Yes:
+                        # Remove entry if already exists
+                        rows = self.workTableWidget.rowCount()
+                        if rows != 0:
+                            for row in range(rows - 1, -1, -1):
+                                if str(self.workTableWidget.item(row, 0).text()) == device:
+                                    self.workTableWidget.removeRow(row)
 
-                # Security Question
-                ret = QtWidgets.QMessageBox.warning(self, self.tr('Warning!'), self.tr('You are about to erase %s.\nAre you sure, you want to proceed?') % device, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-                if ret == ret == QtWidgets.QMessageBox.Yes:
+                        # Setup algo and rounds  ## TODO ugly should be its own function!
+                        if serial in utils.read_config('resume').sections():
+                            resume = QtWidgets.QMessageBox.question(self, self.tr('Resume?'), self.tr('Do you wanna resume the last job?'), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                            if resume == QtWidgets.QMessageBox.Yes:
+                                algo, pattern, current_round, position, diff_offset = self.resume_status(serial, True)
+                            else:
+                                algo, pattern, current_round, position, diff_offset = self.resume_status(serial, False)
+                                self.remove_status(serial)
+                        else:
+                            algo, pattern, current_round, position, diff_offset = self.resume_status(serial, False)
 
-                    # Remove entry if already exists
-                    rows = self.tableWidget.rowCount()
-                    if rows != 0:
-                        for row in range(rows - 1, -1, -1):
-                            if str(self.tableWidget.item(row, 0).text()) == device:
-                                self.tableWidget.removeRow(row)
+                        # Setup Item's
+                        passItem = QtWidgets.QTableWidgetItem()
+                        passItem.setText('{}/{}'.format(current_round, len(pattern)))
+                        speedItem = QtWidgets.QTableWidgetItem()
+                        etaItem = QtWidgets.QTableWidgetItem()
+                        deviceItem = QtWidgets.QTableWidgetItem(device)
+                        comboMethodItem = QtWidgets.QTableWidgetItem(algo)
 
-                    # Setup Item's
-                    passItem = QtWidgets.QTableWidgetItem()
-                    passItem.setTextAlignment(Qt.Qt.AlignCenter)
-                    speedItem = QtWidgets.QTableWidgetItem()
-                    speedItem.setTextAlignment(Qt.Qt.AlignCenter)
-                    etaItem = QtWidgets.QTableWidgetItem()
-                    etaItem.setTextAlignment(Qt.Qt.AlignCenter)
-                    deviceItem = QtWidgets.QTableWidgetItem(device)
-                    deviceItem.setTextAlignment(Qt.Qt.AlignCenter)
-                    comboMethodItem = QtWidgets.QTableWidgetItem(self.comboMethod.currentText())
-                    comboMethodItem.setTextAlignment(Qt.Qt.AlignCenter)
+                        # Get Size
+                        size = utils.get_partition_info(device)[2]
 
-                    if self.comboMethod.currentIndex() == 0:
-                        algo = self.ONE
-                        passItem.setText('0/1')
-                    elif self.comboMethod.currentIndex() == 1:
-                        algo = self.ZERO
-                        passItem.setText('0/1')
-                    elif self.comboMethod.currentIndex() == 2:
-                        algo = self.NSA_130_2
-                        passItem.setText('0/2')
-                    elif self.comboMethod.currentIndex() == 3:
-                        algo = self.GOST
-                        passItem.setText('0/3')
-                    elif self.comboMethod.currentIndex() == 4:
-                        algo = self.HMG_IS_5
-                        passItem.setText('0/3')
-                    elif self.comboMethod.currentIndex() == 5:
-                        algo = self.DOD_E
-                        passItem.setText('0/3')
-                    elif self.comboMethod.currentIndex() == 6:
-                        algo = self.DOD_ECE
-                        passItem.setText('0/7')
-                    elif self.comboMethod.currentIndex() == 7:
-                        algo = self.CANADIAN_OPS_II
-                        passItem.setText('0/7')
-                    elif self.comboMethod.currentIndex() == 8:
-                        algo = self.VSITR
-                        passItem.setText('0/7')
-                    elif self.comboMethod.currentIndex() == 9:
-                        algo = self.BRUCE_SCHNEIER
-                        passItem.setText('0/7')
-                    else:
-                        algo = self.GUTMAN
-                        passItem.setText('0/35')
+                        # Create ProgressBar
+                        progressBar = QtWidgets.QProgressBar()
+                        progressBar.setRange(0, 99)
 
-                    # Get Size
-                    size = int(self.get_partition_size(device)[1])
+                        # Creating TableWidget Items ## TODO use a list and for loop with enumerate?
+                        self.workTableWidget.insertRow(self.workTableWidget.rowCount())
+                        self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 0, deviceItem)
+                        self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 1, comboMethodItem)
+                        self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 2, passItem)
+                        self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 3, speedItem)
+                        self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 4, etaItem)
+                        self.workTableWidget.setCellWidget(self.workTableWidget.rowCount() - 1, 5, progressBar)
 
-                    # Create ProgressBar
-                    progressBar = QtWidgets.QProgressBar()
-                    progressBar.setRange(0, 99)
+                        # Setup Thread and start it
+                        thread = Thread(pattern, device, size, current_round,position, diff_offset, verify=False) ## TODO verify
+                        thread.start()
+                        thread.setPriority(0)
 
-                    # Creating TableWidget Items
-                    self.tableWidget.insertRow(self.tableWidget.rowCount())
-                    self.tableWidget.setItem(self.tableWidget.rowCount() - 1, 0, deviceItem)
-                    self.tableWidget.setItem(self.tableWidget.rowCount() - 1, 1, comboMethodItem)
-                    self.tableWidget.setItem(self.tableWidget.rowCount() - 1, 2, passItem)
-                    self.tableWidget.setItem(self.tableWidget.rowCount() - 1, 3, speedItem)
-                    self.tableWidget.setItem(self.tableWidget.rowCount() - 1, 4, etaItem)
-                    self.tableWidget.setCellWidget(self.tableWidget.rowCount() - 1, 5, progressBar)
+                        # Signal and Slots
+                        thread.finished.connect(self.on_finish)
+                        thread.current_data.connect(progressBar.setValue)
+                        thread.finalize.connect(progressBar.setFormat)
+                        thread.current_pass.connect(passItem.setText)
+                        thread.current_speed.connect(speedItem.setText)
+                        thread.current_eta.connect(etaItem.setText)
+                        thread.current_status_msg.connect(progressBar.setToolTip)
 
-                    # Setup Thread and start it
-                    thread = Thread(algo, device, size)
-                    thread.start()
-                    thread.setPriority(0)
+                        # Save Pointers to control QThread
+                        self.control_list[device] = (thread, progressBar)
 
-                    # Signal and Slots
-                    thread.finished.connect(self.on_finish)
-                    thread.current_data.connect(progressBar.setValue)
-                    thread.finalize.connect(progressBar.setFormat)
-                    thread.current_pass.connect(passItem.setText)
-                    thread.current_speed.connect(speedItem.setText)
-                    thread.current_eta.connect(etaItem.setText)
-                    thread.current_status_msg.connect(progressBar.setToolTip)
+                        # Get item from status and change it from ready to running!
+                        activity = self.deviceTableWidget.item(self.deviceTableWidget.currentRow(), 4)
+                        activity.setText(self.tr('running'))
+                        activity.setForeground(QtGui.QBrush(QtGui.QColor('green')))
+            else:
+                QtWidgets.QMessageBox.warning(self, self.tr('Warning!'), self.tr('Please unlock device first.'), QtWidgets.QMessageBox.Ok)
 
-                    # Save Pointers to control QThread
-                    self.control_list[device] = (thread, progressBar)
+    def resume_status(self, serial, resume=True):
+        if resume:
+            conf = utils.read_config('resume')
+            algo = conf[serial]['algo']
+            pattern = utils.read_config('algorithm')[algo]['pattern'].split(',')
+            current_round = conf[serial].getint('round')
+            position = conf[serial].getint('position')
+            diff_offset = conf[serial].getint('offset')
+        else:
+            algo = self.comboMethod.currentText()
+            pattern = utils.read_config('algorithm')[self.comboMethod.currentText()]['pattern'].split(',')
+            current_round = 0
+            position = 0
+            diff_offset = 0
+        return algo, pattern, current_round, position, diff_offset
+
+    def save_status(self, device, algo, current_round, position, offset):
+        conf = utils.read_config('resume')
+        serial = utils.get_partition_info(device)[1]
+        conf[serial] = {'algo': algo,
+                        'round': current_round,
+                        'position': position,
+                        'offset': offset}
+        utils.write_config('resume', conf)
+
+    def remove_status(self, serial):
+        conf = utils.read_config('resume')
+        if serial in conf.sections():
+            del conf[serial]
+            utils.write_config('resume', conf)
 
     def on_cancel(self):
-        row = self.tableWidget.currentRow()
+        row = self.workTableWidget.currentRow()
         if row != -1:
-            device = str(self.tableWidget.item(row, 0).text())
+            device = str(self.workTableWidget.item(row, 0).text())
             if self.control_list and device in self.control_list.keys():
                 self.control_list[device][0].stop()
-
+                self.save_status(device,
+                                 str(self.workTableWidget.item(row, 1).text()),
+                                 self.control_list[device][0].current_round,
+                                 self.control_list[device][0].position,
+                                 self.control_list[device][0].offset)
     def on_clear(self):
-        rows = self.tableWidget.rowCount()
+        rows = self.workTableWidget.rowCount()
         if rows != 0:
             for row in range(rows -1, -1, -1):
-                if str(self.tableWidget.item(row, 0).text()) not in self.control_list:
-                    self.tableWidget.removeRow(row)
+                if str(self.workTableWidget.item(row, 0).text()) not in self.control_list:
+                    self.workTableWidget.removeRow(row)
+
+    def on_verify(self):
+        pass ## TODO has to be implemented!
 
     def on_finish(self):
-        for k,v in self.control_list.copy().items():
+        for k, v in self.control_list.copy().items():
             if self.sender() == v[0]:
                 if self.sender().terminated:
                     v[1].setFormat(self.tr('Aborted'))
                 else:
                     v[1].setFormat(self.tr('Completed'))
+                    serial = utils.get_partition_info(k)[1]
+                    self.remove_status(serial)
                 del self.control_list[k]
-            
+
+
     def create_action_menu(self):
         # TreeView Menu
-        erase = QtWidgets.QAction(QtGui.QIcon('../share/icons/erase.png'), self.tr('Erase'), self)
-        refresh = QtWidgets.QAction(QtGui.QIcon('../share/icons/refresh.png'), self.tr('Refresh'), self)
+        erase = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/erase.png'), self.tr('Erase'), self)
+        refresh = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/refresh.png'), self.tr('Refresh'), self)
         erase.triggered.connect(self.on_erase)
         refresh.triggered.connect(self.create_device_tree)
-        self.treeWidget.addAction(erase)
-        self.treeWidget.addAction(refresh)
+        self.deviceTableWidget.addAction(erase)
+        self.deviceTableWidget.addAction(refresh)
 
         # TableView Menu
-        cancel = QtWidgets.QAction(QtGui.QIcon('../share/icons/cancel.png'), self.tr('Cancel'), self)
-        clear = QtWidgets.QAction(QtGui.QIcon('../share/icons/clear.png'), self.tr('Clear'), self)
+        cancel = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/cancel.png'), self.tr('Cancel'), self)
+        clear = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/clear.png'), self.tr('Clear'), self)
         cancel.triggered.connect(self.on_cancel)
         clear.triggered.connect(self.on_clear)
-        self.tableWidget.addAction(cancel)
-        self.tableWidget.addAction(clear)
+        self.workTableWidget.addAction(cancel)
+        self.workTableWidget.addAction(clear)
 
-    def create_device_tree(self):
+    def create_device_tree(self): ## TODO rename _items and _item
         if os.getuid() == 0:
-            self.treeWidget.clear()
-            devices = self.get_linux_hdd()
-            item = None
-            sufix=True
+            self.deviceTableWidget.clearContents()
+            self.deviceTableWidget.setRowCount(0)
+            devices = utils.get_linux_hdd()
+            _bytes = True
 
-            for disk, parts in sorted(devices.items()):
-                model, size = self.get_partition_size(disk, sufix)
-                item = QtWidgets.QTreeWidgetItem([disk])
-                item.setIcon(0, QtGui.QIcon('./icons/hdd.png'))
-                item.setToolTip(0, self.tr('Model: %s \nDrive Size: %s') % (model, size))
+            for disk in devices:
+                self.deviceTableWidget.insertRow(self.deviceTableWidget.rowCount())
+                _items = list(utils.get_partition_info(disk, _bytes))
+                _items.insert(0,disk)
+                for column, item in enumerate(_items):
+                    _item = QtWidgets.QTableWidgetItem()
+                    _item.setText(str(item))
+                    self.deviceTableWidget.setItem(self.deviceTableWidget.rowCount() - 1, column, _item)
 
-                for part in parts:
-                    size = self.get_partition_size(part[0], sufix)[1]
-                    child = QtWidgets.QTreeWidgetItem([part[0]])
-                    child.setToolTip(0, self.tr('Partition Size: %s') % size)
-                    item.addChild(child)
+                activity = QtWidgets.QTableWidgetItem()
+                if utils.get_partition_info(disk)[1] in utils.read_config('settings')['locked']:
+                    activity.setText(self.tr('locked'))
+                    activity.setForeground(QtGui.QBrush(QtGui.QColor('red')))
+                elif disk in self.control_list.keys():
+                    activity.setText(self.tr('running'))
+                    activity.setForeground(QtGui.QBrush(QtGui.QColor('green')))
+                else:
+                    activity.setText(self.tr('ready'))
+                self.deviceTableWidget.setItem(self.deviceTableWidget.rowCount() - 1, 4, activity)
 
-                    if part[1]:
-                        item.setDisabled(1) # Disable mounted devices?!
-                self.treeWidget.addTopLevelItem(item)
-
-    def get_linux_hdd(self):
-        disks = {}
-        device_list = subprocess.check_output(['lsblk -x NAME -o NAME,TYPE,MOUNTPOINT -p -r -n -e 11,1'], shell=True).decode().split('\n')
-        for device in device_list:
-            if device:
-                device = list(filter(None, device.split(' ')))
-                if device[1] == 'disk':
-                    disks[device[0]] = []
-                elif device[1] == 'part':
-                    for key in disks.keys():
-                        if key in device[0] and len(device) == 3:
-                            disks[key].append((device[0], True))
-                        elif key in device[0]:
-                            disks[key].append((device[0], False))
-        return disks
-
-    def get_partition_size(self, device, sufix=False):
-        if sufix:
-            cmd = ['lsblk -o MODEL,SIZE -J %s' % device]
-        else:
-            cmd = ['lsblk -o MODEL,SIZE -b -J %s' % device]
-        dev = json.loads(subprocess.check_output(cmd, shell=True))
-        size = dev['blockdevices'][0]['size']
-        model = dev['blockdevices'][0]['model']
-        return model, size
+                # Changing width of the column for model and serial
+                self.deviceTableWidget.setColumnWidth(1,200)
+                self.deviceTableWidget.setColumnWidth(2,200)
 
     def check_update(self):
-        try:
-            release = urllib.request.urlopen(URL).read()[:-1].decode()
-            if VERSION < release:
-                QtWidgets.QMessageBox.information(self, self.tr('Update available!'),
-                    self.tr('''<center><b>KWipe v%s available!</b><br>Please visit:<br>
-                    <a href=https://github.com/PyCoder/KWipe> https://github.com/PyCoder/KWipe</a></center>''') % release, QtWidgets.QMessageBox.Close)
-        except (urllib.error.URLError, urllib.error.HTTPError):
-            pass
+        if utils.read_config('settings')['general'].getboolean('update'):
+            try:
+                release = urllib.request.urlopen(URL).read()[:-1].decode()
+                if VERSION < release:
+                    QtWidgets.QMessageBox.information(self, self.tr('Update available!'),
+                                                      self.tr('''<center><b>KWipe v{} available!</b><br>Please visit:<br>
+                                                  <a href=https://github.com/PyCoder/KWipe>
+                                                  https://github.com/PyCoder/KWipe</a></center>''').format(release),
+                                                      QtWidgets.QMessageBox.Close)
+            except (urllib.error.URLError, urllib.error.HTTPError):
+                pass
+
+    def donate(self):
+        d = showDonate()
+        d.exec()
 
     def about(self):
         ab = showAbout()
         ab.exec_()
-        
+
+    def settings(self):
+        settings = showSettings()
+        settings.exec_()
+
     def check_permission(self):
         if os.getuid() != 0:
-            self.msg = QtWidgets.QMessageBox(self)   
+            self.msg = QtWidgets.QMessageBox(self)
             self.msg.setIcon(QtWidgets.QMessageBox.Information)
-            self.msg.setWindowTitle(self.tr('No root permisson!'))
+            self.msg.setWindowTitle(self.tr('No root permission!'))
             self.msg.setText(self.tr('Running KWipe without root permission'))
             self.msg.addButton(QtWidgets.QMessageBox.Close)
             self.msg.setVisible(True)
             self.toolBar.setEnabled(False)
+            self.menuBar.setEnabled(False)
 
 class Thread(QtCore.QThread):
     current_data = QtCore.pyqtSignal(int)
     current_pass = QtCore.pyqtSignal(str)
     current_speed = QtCore.pyqtSignal(str)
     current_eta = QtCore.pyqtSignal(str)
-    finalize = QtCore.pyqtSignal(str)
     current_status_msg = QtCore.pyqtSignal(str)
+    finalize = QtCore.pyqtSignal(str)
     terminated = False
-    
-    def __init__(self, algo, device, size):
+
+    def __init__(self, algo, device, size, current_round, position, diff_offset, verify): ## TODO verify
         QtCore.QThread.__init__(self)
         self.algo = algo
         self.device = device
         self.size = size
+        self.current_round = current_round
+        self.position = position
+        self.diff_offset = diff_offset
+        self.verify = verify
         self.semaphore = QtCore.QSemaphore(1)
-   
+
     def run(self):
-        stat = 0
         limit = int(self.size / _MEGABYTE) * _MEGABYTE
         rest = int(self.size - limit)
 
-        with open(self.device, 'w+b') as f:
-            for method in self.algo:
+        with open(self.device, 'r+b') as f:
+            f.seek(self.position)
+            for method in self.algo[self.current_round:]:
                 if self.semaphore.available() != 0:
-                    if method == 'random':
-                        data = urandom(_MEGABYTE)
-                        rest_data = urandom(rest)
-                    else:
-                        data = binascii.unhexlify(method) * 262144 # Converted to 1 MiB
-                        rest_data = binascii.unhexlify(method) * int(rest / 4)
+                    data = utils.prepare_data(method, _MEGABYTE)
+                    rest_data = utils.prepare_data(method, rest)
 
-                    # start time for eta and mbps
-                    start_time = datetime.now()
+                    # start time for eta and mbps and correction in case if we resume!
+                    start_time = datetime.now() - timedelta(seconds=self.diff_offset)
 
-                    for total_bytes_written in range(0, self.size, _MEGABYTE):
+                    for total_bytes_written in range(self.position, self.size, _MEGABYTE):
                         if self.semaphore.available():
 
                             # Write to file/device, flush and fsync it
-                            if total_bytes_written == limit and rest != 0:
+                            if total_bytes_written == limit and rest !=0:
                                 f.write(rest_data)
                             else:
                                 f.write(data)
@@ -339,21 +374,21 @@ class Thread(QtCore.QThread):
 
                             # DEBUG
                             if _DEBUG:
-                                print('Device:', self.device, 'Size:', self.size, 'Limit:', limit, 'Rest:', rest, 'Bytes written:', total_bytes_written + _MEGABYTE)
+                                print('Device:', self.device, 'Size:', self.size, 'Bytes written:', total_bytes_written + _MEGABYTE, 'Position of FP:', f.tell())
 
                             # Set the offset-time
-                            offset = (datetime.now() - start_time).seconds
+                            self.offset = (datetime.now() - start_time).seconds
 
                             # Calculate percent in python (workaround for QProgressBar qint32)
                             percent = int((total_bytes_written / self.size) * 100)
                             self.current_data.emit(percent)
 
-                            seconds = int((self.size - total_bytes_written) / (total_bytes_written / (offset or 1))) if total_bytes_written else 0
+                            seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))) if total_bytes_written else 0
                             eta = str(timedelta(seconds=seconds))
-                            mbps = str(round(total_bytes_written / _MEGABYTE / (offset or 1), 1))
+                            mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 1))
                             self.current_speed.emit(mbps)
                             self.current_eta.emit(eta)
-
+                            self.position = f.tell()
                         else:
                             self.terminated = True
                             status_msg = self.tr('Only %s %% overwritten!') % (round(total_bytes_written / (self.size / 100), 2))
@@ -362,12 +397,11 @@ class Thread(QtCore.QThread):
 
                     # Start again and emit pass
                     f.seek(0)
-                    stat += 1
-                    self.current_pass.emit(str(stat) + '/' + str(len(self.algo)))
+                    self.current_round += 1
+                    self.current_pass.emit(str(self.current_round) + '/' + str(len(self.algo)))
                 else:
                     self.terminated = True
                     break
             self.finalize.emit(self.tr('Finalize'))
-
     def stop(self):
         self.semaphore.acquire()

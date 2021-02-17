@@ -3,6 +3,12 @@
 
 Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
+### 3.0 Released with new features!
+- Pause and resume
+- Change language
+- Protect devices
+- Umount devices
+
 ##### Supported Wipe-Modes:
 - One
 - Zero
@@ -18,10 +24,6 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
 ##### Supported Language:
 - English
-- German
-- Czech
-- Romanian
-- Russian
 
 ##### Deps:
 - Python3
@@ -31,10 +33,3 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
 ##### Tested with:
 Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data Recovery, R-Studio 
-
-
-##### INFO:
-Some recovery tools can show you a "false-positive" result, caused by the still existing MFT if you only overwrite the partition and not the whole disk!
-
-#### Future:
-I will add some new features and make a redesign.
