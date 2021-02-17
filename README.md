@@ -5,9 +5,12 @@
 
 
 ### 3.0 Released with new features!
+- Direct download ---> https://github.com/PyCoder/KWipe/releases/tag/3.0.0
+
+#### New features
 - Pause and resume
 - Protect devices
-- Edit Algorithms
+- Edit algorithms
 - Ui update
 - Code update
 - Prepared for PyInstall
@@ -40,4 +43,5 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 
 ##### TODO:
 - Implement verify
+- Implement change language (settings)
 - Clean messy code
