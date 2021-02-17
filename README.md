@@ -13,7 +13,7 @@
 - Edit algorithms
 - Ui update
 - Code update
-- Prepared for PyInstall
+- Prepared for PyInstaller
 
 ##### Supported Wipe-Modes:
 - One
