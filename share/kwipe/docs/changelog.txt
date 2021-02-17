@@ -162,4 +162,7 @@ Removed some algorithms that were identical
 Removed translation (will be updated later)
 Fixed an error in on_erase (ret == ret ==)
 
+3.0.1
+Fixed a little error in utils.prepare_data()
+
 
