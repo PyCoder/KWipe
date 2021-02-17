@@ -42,7 +42,9 @@
 Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data Recovery, R-Studio 
 
 ##### TODO:
-- Implement verify
+- Implement verify (settings)
 - Implement change language (settings)
 - Clean messy code
+- Fix workaround for self.position
+- Fix crash if there is no serial number (UUID instead)
 - Make package with flatpak
