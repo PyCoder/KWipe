@@ -165,4 +165,7 @@ Fixed an error in on_erase (ret == ret ==)
 3.0.1
 Fixed a little error in utils.prepare_data()
 
+3.0.2
+Fixed added a workaround for self.position
+
 
