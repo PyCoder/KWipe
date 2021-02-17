@@ -152,16 +152,13 @@ Changed UI from QTreeWidget to QTableWidget
 Changed optimized some code
 Added pause/resume function
 Added protection function to protect devices from wiping
-Added umount function
 Added settings menu
 Added verify function to verify that the data was written correctly
-Added help
 Added donation button
 Added algorithm editor
-Added some icons
 Added serial number to device
 Added code for PyInstaller
-Removed some algorithms that are identical
+Removed some algorithms that were identical
 Removed translation (will be updated later)
 Fixed an error in on_erase (ret == ret ==)
 
