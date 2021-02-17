@@ -78,4 +78,5 @@ def prepare_data(method, size):
             c += 1
             if c == len(hex_data):
                 c = 0
-    return binascii.unhexlify(data)
+        data = binascii.unhexlify(data)
+    return data
