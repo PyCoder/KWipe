@@ -1,2 +1,3 @@
 #!/bin/bash
-python3 ../share/kwipe/KWipe
+cd ../share/kwipe/
+python3 KWipe.py

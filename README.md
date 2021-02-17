@@ -1,7 +1,19 @@
 # KWipe
 ### KWipe is a secure erase (wipe) application, completely written in PyQt5!
 
-Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
+![KWipe 3.0.0](https://github.com/PyCoder/KWipe/blob/KWipe-3.0.0/screenshots/main.png?raw=true)
+
+
+### 3.0 Released with new features!
+- Direct download ---> https://github.com/PyCoder/KWipe/releases/tag/3.0.0
+
+#### New features
+- Pause and resume
+- Protect devices
+- Edit algorithms
+- Ui update
+- Code update
+- Prepared for PyInstall
 
 ##### Supported Wipe-Modes:
 - One
@@ -9,7 +21,8 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 - DOD
 - DOD-E
 - VSITR
-- Gutman
+- Gutmann 35 
+- Gutmann short
 - Bruce Schneier
 - Britisch HMG Standard 5
 - Russian Gost p50739-95
@@ -18,10 +31,6 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 
 ##### Supported Language:
 - English
-- German
-- Czech
-- Romanian
-- Russian
 
 ##### Deps:
 - Python3
@@ -32,9 +41,7 @@ Video: https://www.youtube.com/watch?v=bXG-aEDUNXc
 ##### Tested with:
 Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data Recovery, R-Studio 
 
-
-##### INFO:
-Some recovery tools can show you a "false-positive" result, caused by the still existing MFT if you only overwrite the partition and not the whole disk!
-
-#### Future:
-I will add some new features and make a redesign.
+##### TODO:
+- Implement verify
+- Implement change language (settings)
+- Clean messy code

@@ -116,7 +116,7 @@ Changed kwipe.py
 
 2.1.8
 Changed on_erase now removes double entries at start.
-Changed on_rease now asks the security question only if the device is not already in the list
+Changed on_erase now asks the security question only if the device is not already in the list
 Updated translation files
 
 2.2.0
@@ -136,10 +136,33 @@ Changed ghost to gost
 Added github url in about.ui
 
 2.2.5
-Changed release.md to REALSE
+Changed release.md to RELEASE
 
 2.2.6
 Changed list to tuple for the algorithm part to save memory.
 
 2.2.7
 Changed the "ETA part" (blackpantherOS patch)
+
+3.0.0
+Changed instead of calculating 1MB it generates now 1MB chunks with utils.prepare_data()
+Changed all algorithms are now located in kwipe/algorithm.conf
+Changed some functions are now located in kwipe/utils.py
+Changed UI from QTreeWidget to QTableWidget
+Changed optimized some code
+Added pause/resume function
+Added protection function to protect devices from wiping
+Added umount function
+Added settings menu
+Added verify function to verify that the data was written correctly
+Added help
+Added donation button
+Added algorithm editor
+Added some icons
+Added serial number to device
+Added code for PyInstaller
+Removed some algorithms that are identical
+Removed translation (will be updated later)
+Fixed an error in on_erase (ret == ret ==)
+
+
