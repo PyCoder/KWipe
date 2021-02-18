@@ -32,7 +32,7 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 
 def get_linux_hdd():
     disks = []
-    device_list = json.loads(subprocess.check_output(['lsblk -J -d -o NAME,MOUNTPOINT -e 11,1,252'],
+    device_list = json.loads(subprocess.check_output(['lsblk -J -d -o NAME,MOUNTPOINT -e 11,1,252,7'],
                                           shell=True))['blockdevices']
     for device in device_list:
         disks.append('/dev/'+device['name'])
