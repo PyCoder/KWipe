@@ -47,5 +47,5 @@ Algorithm's:
 http://www.killdisk.com/notes.htm
 
 PyInstaller:
-One-File: python -OO -m PyInstaller -F --add-data="language:language" --add-data="icons:icons" --add-data="config:config" --add-data="Ui:Ui" --clean KWipe.py
-One-Dir: python -OO -m PyInstaller -D --add-data="language:language" --add-data="icons:icons" --add-data="config:config" --add-data="Ui:Ui" --clean KWipe.py
+One-File: python -OO -m PyInstaller -F --add-data="language:language" --add-data="icons:icons" --add-data="config:config" --add-data="Ui:Ui" --add-data="docs:docs" --clean KWipe.py
+One-Dir: python -OO -m PyInstaller -D --add-data="language:language" --add-data="icons:icons" --add-data="config:config" --add-data="Ui:Ui" --add-data="docs:docs" --clean KWipe.py
