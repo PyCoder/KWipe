@@ -168,4 +168,6 @@ Fixed a little error in utils.prepare_data()
 3.0.2
 Fixed added a workaround for self.position
 
+3.0.3
+Fixed crash with /dev/loop in utils.get_linux_hdd()
 
