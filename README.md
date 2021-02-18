@@ -46,5 +46,5 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Implement change language (settings)
 - Clean messy code
 - Fix workaround for self.position
-- Fix crash if there is no serial number (UUID instead)
+- Fix crash if there is no serial number (Workaround remove maj 7 from lsblk)
 - Make package with flatpak
