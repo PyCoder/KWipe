@@ -5,7 +5,7 @@
 
 
 ### 3.0 Released with new features!
-- Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.2/KWipe-3.0.2.tar.gz
+- Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz
 
 #### New features
 - Pause and resume
