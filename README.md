@@ -4,10 +4,13 @@
 ![KWipe 3.0.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
 
 
+### Donation in Bitcoin:
+3EiDHWZewRv4WUwbyLyBQMzGvqksPYh7VT
+
 ### 3.0 Released with new features!
 - Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz
 
-#### New features
+#### New features:
 - Pause and resume
 - Protect devices
 - Edit algorithms
