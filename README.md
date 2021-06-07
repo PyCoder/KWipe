@@ -3,14 +3,11 @@
 
 ![KWipe 3.0.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
 
-
+### [Donate via PayPal](https://www.paypal.com/donate?business=BRYVTAQ95YPNU&currency_code=USD)
 ### Donation in Bitcoin:
 ![3EiDHWZewRv4WUwbyLyBQMzGvqksPYh7VT](https://github.com/PyCoder/KWipe/blob/master/share/kwipe/icons/qr.png?raw=true)
 
-3EiDHWZewRv4WUwbyLyBQMzGvqksPYh7VT
-
-### 3.0 Released with new features!
-- Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz
+### [3.0 Released with new features!](https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz)
 
 #### New features:
 - Pause and resume
