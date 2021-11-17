@@ -30,7 +30,7 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 class showSettings(QtWidgets.QDialog):
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        self.ui = uic.loadUi(path_to_files+'/Ui/settings.ui', self)
+        self.ui = uic.loadUi(f'{path_to_files}/Ui/settings.ui', self)
 
         # Read config
         self.conf = utils.read_config('settings')
@@ -47,7 +47,7 @@ class showSettings(QtWidgets.QDialog):
 
     def load_algorithm(self):
         self.textAlgorithm.clear()
-        with open(path_to_files+'/config/algorithm.conf', 'r') as f:
+        with open(f'{path_to_files}/config/algorithm.conf', 'r') as f:
             self.textAlgorithm.textCursor().insertText(f.read())
 
     def load_locked(self):
@@ -94,7 +94,7 @@ class showSettings(QtWidgets.QDialog):
         self.conf['locked'] = lock
 
     def save_algorithm_tab(self):
-        with open(path_to_files+'/config/algorithm.conf', 'w') as f:
+        with open(f'{path_to_files}/config/algorithm.conf', 'w') as f:
             f.write(self.textAlgorithm.toPlainText())
 
     def on_save(self):

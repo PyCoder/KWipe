@@ -30,7 +30,7 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 class showAbout(QtWidgets.QDialog):
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        self.ui = uic.loadUi(path_to_files+'/Ui/about.ui', self)
+        self.ui = uic.loadUi(f'{path_to_files}/Ui/about.ui', self)
 
         # Setup Text 
         text = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">

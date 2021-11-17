@@ -29,6 +29,7 @@ import utils
 bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
 path_to_files = os.path.abspath(os.path.join(bundle_dir))
 
+
 def loadLang():
     # from en_US to en
     system_lang = QtCore.QLocale.system().name()[:-3]
@@ -36,9 +37,11 @@ def loadLang():
     _qt_trans = QtCore.QTranslator()
     for lang in utils.supported_languages():
         if system_lang == lang.split('_')[1][:-3]:
-            _kwipe_trans.load(lang, path_to_files+'/language/')
-    _qt_trans.load('qt_' + QtCore.QLocale.system().name(), QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
+            _kwipe_trans.load(lang, f'{path_to_files}/language/')
+    _qt_trans.load('qt_' + QtCore.QLocale.system().name(),
+                   QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
     return _kwipe_trans, _qt_trans
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

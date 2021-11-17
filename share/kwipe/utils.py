@@ -32,17 +32,16 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 
 def get_linux_hdd():
     disks = []
-    device_list = json.loads(subprocess.check_output(['lsblk -J -d -o NAME,MOUNTPOINT -e 11,1,252,7'],
-                                          shell=True))['blockdevices']
+    device_list = json.loads(subprocess.check_output(['lsblk -J -d -o NAME,MOUNTPOINT -e 11,1,252,7'], shell=True))['blockdevices']
     for device in device_list:
-        disks.append('/dev/'+device['name'])
+        disks.append(f'/dev/{device["name"]}')
     return disks
 
 def get_partition_info(device, _bytes=False):
     if _bytes:
-        cmd = ['lsblk -o MODEL,SIZE,SERIAL,NAME -J ' + device]
+        cmd = [f'lsblk -o MODEL,SIZE,SERIAL,NAME -J {device}']
     else:
-        cmd = ['lsblk -o MODEL,SIZE,SERIAL,NAME -b -J ' + device]
+        cmd = [f'lsblk -o MODEL,SIZE,SERIAL,NAME -b -J {device}']
     dev = json.loads(subprocess.check_output(cmd, shell=True))
     model = dev['blockdevices'][0]['model']
     serial = dev['blockdevices'][0]['serial']
@@ -51,11 +50,11 @@ def get_partition_info(device, _bytes=False):
 
 def read_config(file):
     conf = configparser.ConfigParser()
-    conf.read(path_to_files+'/config/'+file+'.conf')
+    conf.read(f'{path_to_files}/config/{file}.conf')
     return conf
 
 def write_config(file, conf):
-    with open(path_to_files+'/config/'+file+'.conf', 'w') as configfile:
+    with open(f'{path_to_files}/config/{file}.conf', 'w') as configfile:
         conf.write(configfile)
 
 def load_default_language():
@@ -63,10 +62,10 @@ def load_default_language():
     return default
 
 def supported_languages():
-    lang = sorted(fnmatch.filter(os.listdir(path_to_files+'/language/'), '*.qm'))
+    lang = sorted(fnmatch.filter(os.listdir(f'{path_to_files}/language/'), '*.qm'))
     return lang
 
-def prepare_data(method, size):
+def prepare_data(method, size): ## TODO check if you can do it with enumerate or (s*((l*2)//len(s)+1))[:l]
     if method == 'random':
         data = os.urandom(size)
     else:
@@ -76,6 +75,7 @@ def prepare_data(method, size):
         for byte in range(size):
             data += hex_data[c]
             c += 1
+            print(c)
             if c == len(hex_data):
                 c = 0
         data = binascii.unhexlify(data)

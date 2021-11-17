@@ -29,7 +29,7 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 class showDonate(QtWidgets.QDialog):
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        self.ui = uic.loadUi(path_to_files+'/Ui/donate.ui', self)
+        self.ui = uic.loadUi(f'{path_to_files}/Ui/donate.ui', self)
 
         # Setup signal and slots
         self.pushButton.clicked.connect(self.copy)

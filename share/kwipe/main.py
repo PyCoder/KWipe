@@ -36,18 +36,21 @@ import utils
 bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
 path_to_files = os.path.abspath(os.path.join(bundle_dir))
 
-## TODO IMPORTANT!!!
+# TODO IMPORTANT!!!
 """
 Clean the messy code!
 Make make the functions shorter!!!
-Rename some variables (awful names!!)
+Rename some variables (awful names!!) pop8
 implement verify
 make translations
 Multi selection
 Stop / Start all
+f'string format!
+debug.log import logging
 """
 _DEBUG = False
 _MEGABYTE = 1048576
+
 
 class KWipe(QtWidgets.QMainWindow):
     # Ugly hack dic
@@ -55,7 +58,7 @@ class KWipe(QtWidgets.QMainWindow):
 
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
-        self.ui = uic.loadUi(path_to_files+'/Ui/kwipe.ui', self)
+        self.ui = uic.loadUi(f'{path_to_files}/Ui/kwipe.ui', self)
 
         # Start functions 
         self.check_permission()
@@ -64,7 +67,7 @@ class KWipe(QtWidgets.QMainWindow):
         self.check_update()
 
         # Setup Window Title
-        text = 'KWipe {}'.format(VERSION)
+        text = f'KWipe {VERSION}'
         self.setWindowTitle(text)
 
         # Setup QComboBox, Spacer and Label
@@ -87,7 +90,8 @@ class KWipe(QtWidgets.QMainWindow):
         self.action_donate.triggered.connect(self.donate)
 
         # Setup filesystem watcher for block devices
-        fs_watcher = QtCore.QFileSystemWatcher(['/dev/block', path_to_files+'/config/settings.conf', path_to_files+'/config/algorithm.conf'], self)
+        fs_watcher = QtCore.QFileSystemWatcher(['/dev/block', f'{path_to_files}/config/settings.conf',
+                                                f'{path_to_files}/config/algorithm.conf'], self)
         fs_watcher.directoryChanged.connect(self.reload_config)
         fs_watcher.fileChanged.connect(self.reload_config)
 
@@ -109,8 +113,8 @@ class KWipe(QtWidgets.QMainWindow):
                 if device not in self.control_list:
                     # Security Question
                     ret = QtWidgets.QMessageBox.warning(self, self.tr('Warning!'),
-                                                        self.tr('You are about to erase %s.\n'
-                                                                'Are you sure, you want to proceed?') % device,
+                                                        self.tr(f'You are about to erase {device}.\n'
+                                                                'Are you sure, you want to proceed?'),
                                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
                     if ret == QtWidgets.QMessageBox.Yes:
                         # Remove entry if already exists
@@ -122,7 +126,9 @@ class KWipe(QtWidgets.QMainWindow):
 
                         # Setup algo and rounds  ## TODO ugly should be its own function!
                         if serial in utils.read_config('resume').sections():
-                            resume = QtWidgets.QMessageBox.question(self, self.tr('Resume?'), self.tr('Do you wanna resume the last job?'), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                            resume = QtWidgets.QMessageBox.question(self, self.tr('Resume?'),
+                                                                    self.tr('Do you wanna resume the last job?'),
+                                                                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
                             if resume == QtWidgets.QMessageBox.Yes:
                                 algo, pattern, current_round, position, diff_offset = self.resume_status(serial, True)
                             else:
@@ -133,7 +139,7 @@ class KWipe(QtWidgets.QMainWindow):
 
                         # Setup Item's
                         passItem = QtWidgets.QTableWidgetItem()
-                        passItem.setText('{}/{}'.format(current_round, len(pattern)))
+                        passItem.setText(f'{current_round}/{len(pattern)}')
                         speedItem = QtWidgets.QTableWidgetItem()
                         etaItem = QtWidgets.QTableWidgetItem()
                         deviceItem = QtWidgets.QTableWidgetItem(device)
@@ -146,7 +152,7 @@ class KWipe(QtWidgets.QMainWindow):
                         progressBar = QtWidgets.QProgressBar()
                         progressBar.setRange(0, 99)
 
-                        # Creating TableWidget Items ## TODO use a list and for loop with enumerate?
+                        # Creating TableWidget Items # TODO use a list and for loop with enumerate?
                         self.workTableWidget.insertRow(self.workTableWidget.rowCount())
                         self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 0, deviceItem)
                         self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 1, comboMethodItem)
@@ -155,8 +161,8 @@ class KWipe(QtWidgets.QMainWindow):
                         self.workTableWidget.setItem(self.workTableWidget.rowCount() - 1, 4, etaItem)
                         self.workTableWidget.setCellWidget(self.workTableWidget.rowCount() - 1, 5, progressBar)
 
-                        # Setup Thread and start it
-                        thread = Thread(pattern, device, size, current_round,position, diff_offset, verify=False) ## TODO verify
+                        # Setup Thread and start it # TODO verify
+                        thread = Thread(pattern, device, size, current_round, position, diff_offset, verify=False)
                         thread.start()
                         thread.setPriority(0)
 
@@ -177,7 +183,8 @@ class KWipe(QtWidgets.QMainWindow):
                         activity.setText(self.tr('running'))
                         activity.setForeground(QtGui.QBrush(QtGui.QColor('green')))
             else:
-                QtWidgets.QMessageBox.warning(self, self.tr('Warning!'), self.tr('Please unlock device first.'), QtWidgets.QMessageBox.Ok)
+                QtWidgets.QMessageBox.warning(self, self.tr('Warning!'), self.tr('Please unlock device first.'),
+                                              QtWidgets.QMessageBox.Ok)
 
     def resume_status(self, serial, resume=True):
         if resume:
@@ -221,15 +228,16 @@ class KWipe(QtWidgets.QMainWindow):
                                  self.control_list[device][0].current_round,
                                  self.control_list[device][0].position,
                                  self.control_list[device][0].offset)
+
     def on_clear(self):
         rows = self.workTableWidget.rowCount()
         if rows != 0:
-            for row in range(rows -1, -1, -1):
+            for row in range(rows - 1, -1, -1):
                 if str(self.workTableWidget.item(row, 0).text()) not in self.control_list:
                     self.workTableWidget.removeRow(row)
 
     def on_verify(self):
-        pass ## TODO has to be implemented!
+        pass  # TODO has to be implemented!
 
     def on_finish(self):
         for k, v in self.control_list.copy().items():
@@ -242,25 +250,24 @@ class KWipe(QtWidgets.QMainWindow):
                     self.remove_status(serial)
                 del self.control_list[k]
 
-
     def create_action_menu(self):
         # TreeView Menu
-        erase = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/erase.png'), self.tr('Erase'), self)
-        refresh = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/refresh.png'), self.tr('Refresh'), self)
+        erase = QtWidgets.QAction(QtGui.QIcon(f'{path_to_files}/icons/erase.png'), self.tr('Erase'), self)
+        refresh = QtWidgets.QAction(QtGui.QIcon(f'{path_to_files}/icons/refresh.png'), self.tr('Refresh'), self)
         erase.triggered.connect(self.on_erase)
         refresh.triggered.connect(self.create_device_tree)
         self.deviceTableWidget.addAction(erase)
         self.deviceTableWidget.addAction(refresh)
 
         # TableView Menu
-        cancel = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/cancel.png'), self.tr('Cancel'), self)
-        clear = QtWidgets.QAction(QtGui.QIcon(path_to_files+'/icons/clear.png'), self.tr('Clear'), self)
+        cancel = QtWidgets.QAction(QtGui.QIcon(f'{path_to_files}/icons/cancel.png'), self.tr('Cancel'), self)
+        clear = QtWidgets.QAction(QtGui.QIcon(f'{path_to_files}/icons/clear.png'), self.tr('Clear'), self)
         cancel.triggered.connect(self.on_cancel)
         clear.triggered.connect(self.on_clear)
         self.workTableWidget.addAction(cancel)
         self.workTableWidget.addAction(clear)
 
-    def create_device_tree(self): ## TODO rename _items and _item
+    def create_device_tree(self):  # TODO rename _items and _item
         if os.getuid() == 0:
             self.deviceTableWidget.clearContents()
             self.deviceTableWidget.setRowCount(0)
@@ -270,7 +277,7 @@ class KWipe(QtWidgets.QMainWindow):
             for disk in devices:
                 self.deviceTableWidget.insertRow(self.deviceTableWidget.rowCount())
                 _items = list(utils.get_partition_info(disk, _bytes))
-                _items.insert(0,disk)
+                _items.insert(0, disk)
                 for column, item in enumerate(_items):
                     _item = QtWidgets.QTableWidgetItem()
                     _item.setText(str(item))
@@ -288,8 +295,8 @@ class KWipe(QtWidgets.QMainWindow):
                 self.deviceTableWidget.setItem(self.deviceTableWidget.rowCount() - 1, 4, activity)
 
                 # Changing width of the column for model and serial
-                self.deviceTableWidget.setColumnWidth(1,200)
-                self.deviceTableWidget.setColumnWidth(2,200)
+                self.deviceTableWidget.setColumnWidth(1, 200)
+                self.deviceTableWidget.setColumnWidth(2, 200)
 
     def check_update(self):
         if utils.read_config('settings')['general'].getboolean('update'):
@@ -297,9 +304,9 @@ class KWipe(QtWidgets.QMainWindow):
                 release = urllib.request.urlopen(URL).read()[:-1].decode()
                 if VERSION < release:
                     QtWidgets.QMessageBox.information(self, self.tr('Update available!'),
-                                                      self.tr('''<center><b>KWipe v{} available!</b><br>Please visit:<br>
-                                                  <a href=https://github.com/PyCoder/KWipe>
-                                                  https://github.com/PyCoder/KWipe</a></center>''').format(release),
+                                                      self.tr(f'''<center><b>KWipe v{release} available!</b><br>
+                                                      Please visit:<br><a href=https://github.com/PyCoder/KWipe>
+                                                  https://github.com/PyCoder/KWipe</a></center>'''),
                                                       QtWidgets.QMessageBox.Close)
             except (urllib.error.URLError, urllib.error.HTTPError):
                 pass
@@ -327,6 +334,7 @@ class KWipe(QtWidgets.QMainWindow):
             self.toolBar.setEnabled(False)
             self.menuBar.setEnabled(False)
 
+
 class Thread(QtCore.QThread):
     current_data = QtCore.pyqtSignal(int)
     current_pass = QtCore.pyqtSignal(str)
@@ -336,7 +344,7 @@ class Thread(QtCore.QThread):
     finalize = QtCore.pyqtSignal(str)
     terminated = False
 
-    def __init__(self, algo, device, size, current_round, position, diff_offset, verify): ## TODO verify
+    def __init__(self, algo, device, size, current_round, position, diff_offset, verify):  # TODO verify
         QtCore.QThread.__init__(self)
         self.algo = algo
         self.device = device
@@ -359,13 +367,13 @@ class Thread(QtCore.QThread):
                     rest_data = utils.prepare_data(method, rest)
 
                     # start time for eta and mbps and correction in case if we resume!
-                    start_time = datetime.now() - timedelta(seconds=self.diff_offset)
+                    start_time = datetime.now() - timedelta(seconds=self.diff_offset)  # TODO Use time.perf_counter()
 
                     for total_bytes_written in range(self.position, self.size, _MEGABYTE):
                         if self.semaphore.available():
 
                             # Write to file/device, flush and fsync it
-                            if total_bytes_written == limit and rest !=0:
+                            if total_bytes_written == limit and rest != 0:
                                 f.write(rest_data)
                             else:
                                 f.write(data)
@@ -374,7 +382,8 @@ class Thread(QtCore.QThread):
 
                             # DEBUG
                             if _DEBUG:
-                                print('Device:', self.device, 'Size:', self.size, 'Bytes written:', total_bytes_written + _MEGABYTE, 'Position of FP:', f.tell())
+                                print(f'Device: {self.device} Size: {self.size} Bytes written:'
+                                      f' {total_bytes_written + _MEGABYTE} Position of FP: {f.tell()}')
 
                             # Set the offset-time
                             self.offset = (datetime.now() - start_time).seconds
@@ -383,7 +392,7 @@ class Thread(QtCore.QThread):
                             percent = int((total_bytes_written / self.size) * 100)
                             self.current_data.emit(percent)
 
-                            seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))) if total_bytes_written else 0
+                            seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))) if total_bytes_written else 0  # TODO use max()
                             eta = str(timedelta(seconds=seconds))
                             mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 1))
                             self.current_speed.emit(mbps)
@@ -391,19 +400,21 @@ class Thread(QtCore.QThread):
                             self.position = f.tell()
                         else:
                             self.terminated = True
-                            status_msg = self.tr('Only %s %% overwritten!') % (round(total_bytes_written / (self.size / 100), 2))
+                            overwritten = round(total_bytes_written / (self.size / 100), 2)
+                            status_msg = self.tr(f'Only {overwritten} overwritten!')
                             self.current_status_msg.emit(status_msg)
                             break
 
                     # Start again and emit pass
                     f.seek(0)
-                    if not self.terminated: ## Workaround for the moment
+                    if not self.terminated:  # Workaround for the moment
                         self.position = 0
                     self.current_round += 1
-                    self.current_pass.emit(str(self.current_round) + '/' + str(len(self.algo)))
+                    self.current_pass.emit(f'{str(self.current_round)} / {str(len(self.algo))}')
                 else:
                     self.terminated = True
                     break
             self.finalize.emit(self.tr('Finalize'))
+
     def stop(self):
         self.semaphore.acquire()

@@ -17,5 +17,7 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
+## TODO use json
+
 VERSION = '3.0.3'
 URL = 'https://raw.githubusercontent.com/PyCoder/KWipe/master/RELEASE'
