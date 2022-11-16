@@ -1,6 +1,6 @@
 # settings.py
 #
-# Copyright (C) 2012 - 2021 Fabian Di Milia, All rights reserved.
+# Copyright (C) 2012 - 2022 Fabian Di Milia, All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-from PyQt5 import QtWidgets
-from PyQt5 import uic
+from PyQt6 import QtWidgets
+from PyQt6 import uic
 import os
 import sys
 import utils
@@ -30,7 +30,7 @@ path_to_files = os.path.abspath(os.path.join(bundle_dir))
 class showSettings(QtWidgets.QDialog):
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
-        self.ui = uic.loadUi(path_to_files+'/Ui/settings.ui', self)
+        self.ui = uic.loadUi(f'{path_to_files}/Ui/settings.ui', self)
 
         # Read config
         self.conf = utils.read_config('settings')
@@ -47,13 +47,13 @@ class showSettings(QtWidgets.QDialog):
 
     def load_algorithm(self):
         self.textAlgorithm.clear()
-        with open(path_to_files+'/config/algorithm.conf', 'r') as f:
+        with open(f'{path_to_files}/config/algorithm.conf', 'r') as f:
             self.textAlgorithm.textCursor().insertText(f.read())
 
     def load_locked(self):
         self.listUnlock.clear()
         self.listLock.clear()
-        disks = utils.get_linux_hdd()
+        disks = utils.get_linux_hdd(self.conf['general']['exclude'])
         for disk in disks:
             if utils.get_partition_info(disk)[1] not in self.conf['locked']:
                 self.listUnlock.addItem(disk)
@@ -64,6 +64,7 @@ class showSettings(QtWidgets.QDialog):
         self.comboLanguage.setCurrentText(self.conf['general']['language'])
         self.checkVerify.setChecked(self.conf['general'].getboolean('verify'))
         self.checkUpdate.setChecked(self.conf['general'].getboolean('update'))
+        self.lineExclude.setText(self.conf['general']['exclude'])
 
     def on_lock(self):
         if self.listUnlock.selectedItems():
@@ -80,8 +81,12 @@ class showSettings(QtWidgets.QDialog):
     def save_general_tab(self):
         # Language
         self.conf['general']['language'] = self.comboLanguage.currentText()
-
-        ## Checkboxes
+        # Exclude
+        if self.lineExclude.text():
+            self.conf['general']['exclude'] = self.lineExclude.text()
+        else:
+            self.conf['general']['exclude'] = '11,1,252,7'
+        # Checkboxes
         self.conf['general']['verify'] = str(self.checkVerify.isChecked())
         self.conf['general']['update'] = str(self.checkUpdate.isChecked())
 
@@ -94,7 +99,7 @@ class showSettings(QtWidgets.QDialog):
         self.conf['locked'] = lock
 
     def save_algorithm_tab(self):
-        with open(path_to_files+'/config/algorithm.conf', 'w') as f:
+        with open(f'{path_to_files}/config/algorithm.conf', 'w') as f:
             f.write(self.textAlgorithm.toPlainText())
 
     def on_save(self):

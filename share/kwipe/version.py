@@ -1,6 +1,6 @@
 # version.py
 #
-# Copyright (C) 2012 - 2021 Fabian Di Milia, All rights reserved.
+# Copyright (C) 2012 - 2022 Fabian Di Milia, All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,5 +17,5 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-VERSION = '3.0.3'
+VERSION = '3.1.0'
 URL = 'https://raw.githubusercontent.com/PyCoder/KWipe/master/RELEASE'

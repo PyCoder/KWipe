@@ -171,3 +171,16 @@ Fixed added a workaround for self.position
 3.0.3
 Fixed crash with /dev/loop in utils.get_linux_hdd()
 
+3.1.0
+Ported from PyQt5 to PyQt6
+Changed removed thread.setPriority from main.py
+Changed from time.time to time.perf_counter
+Changed to f'{} style
+Changed "Creating TableWidget Items" part to use enumerate()
+Added exclude devices in settings
+Updated copyright date
+Updated donation.ui
+Fixed crash in case of using a card reader and such
+Fixed glitch in about.ui
+
+

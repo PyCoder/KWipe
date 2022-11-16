@@ -1,0 +1,24 @@
+Switch to pyqt wrapper?
+Switch to PySlide?
+
+Switch to pyudev?
+"""
+# import pyudev
+
+# context = pyudev.Context()
+# for device in context.list_devices(subsystem='block', DEVTYPE='disk'):
+#     print(device.device_node, device.device_type, device.sys_number, device.attributes.device)
+"""
+
+Clean the messy code
+Make the functions shorter
+Rename some variables (awful names!!) pop8
+Implement verify / write function that takes fp.tell(), fp.seek(fp.tell()-1MB), read, compare, pass or write again.
+Make translations
+Multi selection
+Stop / Start all
+Pause / Resume all
+Check sys.modules if all requirements are installed?
+Put a silder for 1MB, 10MB, 100MB, 1GB filesize in kwipe gui?
+Kwipe.desktop file + installer
+Create flatpak file instead of pyinstaller
