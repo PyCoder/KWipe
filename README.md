@@ -1,7 +1,7 @@
-# KWipe 3.0
+# KWipe 3.1
 ### KWipe is a secure erase (wipe) application, completely written in PyQt5!
 
-![KWipe 3.0.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
+![KWipe 3.1.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
 
 
 ### Donation in Bitcoin:
@@ -9,7 +9,7 @@
 
 3EiDHWZewRv4WUwbyLyBQMzGvqksPYh7VT
 
-### 3.0 Released with new features!
+### Latest stable release
 - Direct download ---> https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz
 
 #### New features:
@@ -51,5 +51,4 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Implement change language (settings)
 - Clean messy code
 - Fix workaround for self.position
-- Fix crash if there is no serial number (Workaround remove maj 7 from lsblk)
 - Make package with flatpak
