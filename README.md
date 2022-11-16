@@ -39,7 +39,7 @@
 
 ##### Deps:
 - Python3
-- PyQt5
+- PyQt6
 - util-linux (lsblk)
 
 
