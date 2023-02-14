@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # KWipe.py
 #
-# Copyright (C) 2012 - 2022 Fabian Di Milia, All rights reserved.
+# Copyright (C) 2012 - 2023 Fabian Di Milia, All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

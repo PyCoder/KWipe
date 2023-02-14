@@ -182,5 +182,3 @@ Updated copyright date
 Updated donation.ui
 Fixed crash in case of using a card reader and such
 Fixed glitch in about.ui
-
-
