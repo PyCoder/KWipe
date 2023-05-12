@@ -5,9 +5,9 @@
 
 
 ### Donations:
-BTC: bc1q8svseuy6n7yzy2vkc7smu4rsk5fne389y97hmc
-ETH: 0xd4249A759CE930C12E713c0c810Acc9AD604cEfC
-Buy me a coffee: https://www.buymeacoffee.com/pycoder
+- BTC: bc1q8svseuy6n7yzy2vkc7smu4rsk5fne389y97hmc
+- ETH: 0xd4249A759CE930C12E713c0c810Acc9AD604cEfC
+- Buy me a coffee: https://www.buymeacoffee.com/pycoder
 
 #### New features:
 - Improved write speed up to 4x
