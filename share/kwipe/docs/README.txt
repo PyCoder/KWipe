@@ -1,9 +1,10 @@
-NONE-PYINSTALL VERSION:
+NONE-PYINSTALLER VERSION:
 Requirements:
 Python3
-PyQt5
-Qt5
+PyQt6
+Qt6
 util-linux (lsblk)
+directio
 
 Install & Run:
 Put "kwipe" Folder somewhere

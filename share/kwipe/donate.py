@@ -32,7 +32,12 @@ class showDonate(QtWidgets.QDialog):
         self.ui = uic.loadUi(f'{path_to_files}/Ui/donate.ui', self)
 
         # Setup signal and slots
-        self.pushButton.clicked.connect(self.copy)
+        self.pushButton_btc.clicked.connect(self.copy)
+        self.pushButton_eth.clicked.connect(self.copy)
 
     def copy(self):
-        QtWidgets.QApplication.clipboard().setText(self.lineEdit.text())
+        if self.tabWidget.currentIndex() == 0:
+            address = self.lineEdit_btc.text()
+        else:
+            address = self.lineEdit_eth.text()
+        QtWidgets.QApplication.clipboard().setText(address)

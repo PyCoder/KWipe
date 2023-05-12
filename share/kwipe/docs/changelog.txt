@@ -177,7 +177,7 @@ Changed removed thread.setPriority from main.py
 Changed from time.time to time.perf_counter
 Changed to f'{} style
 Changed "Creating TableWidget Items" part to use enumerate()
-Changed from open() to directio to increase the speed by 3 times
+Changed from open() to directio to increase the speed by up to 4 times
 Added exclude devices in settings
 Updated copyright date
 Updated donation.ui
