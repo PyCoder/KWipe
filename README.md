@@ -1,21 +1,22 @@
-# KWipe 3.0
-### KWipe is a secure erase (wipe) application, completely written in PyQt5!
+# KWipe 3.1.0
+### KWipe is a secure erase (wipe) application, completely written in PyQt!
 
-![KWipe 3.0.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
+![KWipe 3.1.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/main.png?raw=true)
 
-### [Donate via PayPal](https://www.paypal.com/donate?business=BRYVTAQ95YPNU&currency_code=USD)
-### Donation in Bitcoin:
-![3EiDHWZewRv4WUwbyLyBQMzGvqksPYh7VT](https://github.com/PyCoder/KWipe/blob/master/share/kwipe/icons/qr.png?raw=true)
 
-### [3.0 Released with new features!](https://github.com/PyCoder/KWipe/releases/download/3.0.3/KWipe-3.0.3.tar.gz)
+### Donations:
+BTC: bc1q8svseuy6n7yzy2vkc7smu4rsk5fne389y97hmc
+ETH: 0xd4249A759CE930C12E713c0c810Acc9AD604cEfC
+Buy me a coffee: https://www.buymeacoffee.com/pycoder
 
 #### New features:
+- Improved write speed up to 4x
+- Ported to PyQt6
 - Pause and resume
 - Protect devices
 - Edit algorithms
 - Ui update
 - Code update
-- Prepared for PyInstaller
 
 ##### Supported Wipe-Modes:
 - One
@@ -36,9 +37,9 @@
 
 ##### Deps:
 - Python3
-- PyQt5
+- PyQt6
 - util-linux (lsblk)
-
+- directio
 
 ##### Tested with:
 Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data Recovery, R-Studio 
@@ -48,5 +49,5 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Implement change language (settings)
 - Clean messy code
 - Fix workaround for self.position
-- Fix crash if there is no serial number (Workaround remove maj 7 from lsblk)
 - Make package with flatpak
+- Create kwipe.desktop with PKExec

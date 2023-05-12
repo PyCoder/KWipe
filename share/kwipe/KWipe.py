@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # KWipe.py
 #
-# Copyright (C) 2012 - 2021 Fabian Di Milia, All rights reserved.
+# Copyright (C) 2012 - 2023 Fabian Di Milia, All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 #
 # Author(s): Fabian Di Milia <fabian.dimilia@gmail.com>
 
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
 from main import KWipe
 import sys
 import os
@@ -29,6 +29,7 @@ import utils
 bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
 path_to_files = os.path.abspath(os.path.join(bundle_dir))
 
+
 def loadLang():
     # from en_US to en
     system_lang = QtCore.QLocale.system().name()[:-3]
@@ -36,9 +37,11 @@ def loadLang():
     _qt_trans = QtCore.QTranslator()
     for lang in utils.supported_languages():
         if system_lang == lang.split('_')[1][:-3]:
-            _kwipe_trans.load(lang, path_to_files+'/language/')
-    _qt_trans.load('qt_' + QtCore.QLocale.system().name(), QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
+            _kwipe_trans.load(lang, f'{path_to_files}/language/')
+    _qt_trans.load('qt_' + QtCore.QLocale.system().name(),
+                   QtCore.QLibraryInfo.path(QtCore.QLibraryInfo.LibraryPath.TranslationsPath))
     return _kwipe_trans, _qt_trans
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
@@ -47,4 +50,4 @@ if __name__ == '__main__':
     app.installTranslator(qt_trans)
     main = KWipe()
     main.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
