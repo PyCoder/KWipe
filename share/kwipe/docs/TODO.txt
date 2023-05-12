@@ -22,3 +22,4 @@ Check sys.modules if all requirements are installed?
 Put a silder for 1MB, 10MB, 100MB, 1GB filesize in kwipe gui?
 Kwipe.desktop file + installer
 Create flatpak file instead of pyinstaller
+Use one-file for pyinstaller instead of directory and write files at the start into ~/.kwipe

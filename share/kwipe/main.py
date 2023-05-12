@@ -32,7 +32,7 @@ import urllib.error
 import os
 import sys
 import utils
-
+import directio
 
 # Modification for PyInstaller
 bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
@@ -350,67 +350,69 @@ class Thread(QtCore.QThread):
         self.diff_offset = diff_offset
         self.verify = verify
         self.semaphore = QtCore.QSemaphore(1)
-
+        
     def run(self):
         limit = int(self.size / _MEGABYTE) * _MEGABYTE
         rest = int(self.size - limit)
+        
+        fd = os.open(self.device, os.O_WRONLY|os.O_DIRECT)
+        
+        # Set current position like seek()
+        os.lseek(fd, self.position, os.SEEK_SET)
+        for method in self.algo[self.current_round:]:
+            if self.semaphore.available() != 0:
+                data = utils.prepare_data(method, _MEGABYTE)
+                rest_data = utils.prepare_data(method, rest)
 
-        with open(self.device, 'r+b') as f:
-            f.seek(self.position)
-            for method in self.algo[self.current_round:]:
-                if self.semaphore.available() != 0:
-                    data = utils.prepare_data(method, _MEGABYTE)
-                    rest_data = utils.prepare_data(method, rest)
+                # start time for eta and mbps and correction in case if we resume!
+                perf_time = time.perf_counter()
 
-                    # start time for eta and mbps and correction in case if we resume!
-                    perf_time = time.perf_counter()
+                for total_bytes_written in range(self.position, self.size, _MEGABYTE):
+                    if self.semaphore.available():
 
-                    for total_bytes_written in range(self.position, self.size, _MEGABYTE):
-                        if self.semaphore.available():
-
-                            # Write to file/device, flush and fsync it
-                            if total_bytes_written == limit and rest != 0:
-                                f.write(rest_data)
-                            else:
-                                f.write(data)
-                            f.flush()
-                            os.fsync(f.fileno())
-
-                            # DEBUG
-                            if _DEBUG:
-                                print(f'Device: {self.device} Size: {self.size} Bytes written:'
-                                      f' {total_bytes_written + _MEGABYTE} Position of FP: {f.tell()}')
-
-                            # Set the offset-time
-                            self.offset = max((time.perf_counter() + self.diff_offset) - perf_time, 1)
-
-                            # Calculate percent in python (workaround for QProgressBar qint32)
-                            percent = int((total_bytes_written / self.size) * 100)
-                            self.current_data.emit(percent)
-                            seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))
-                                          ) if total_bytes_written else 0
-                            eta = str(timedelta(seconds=seconds))
-                            mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 1))
-                            self.current_speed.emit(mbps)
-                            self.current_eta.emit(eta)
-                            self.position = f.tell()
+                        # Write to file/device, flush and fsync it
+                        if total_bytes_written == limit and rest != 0:
+                            directio.write(fd, rest_data)
                         else:
-                            self.terminated = True
-                            overwritten = round(total_bytes_written / (self.size / 100), 2)
-                            status_msg = self.tr(f'Only {overwritten} overwritten!')
-                            self.current_status_msg.emit(status_msg)
-                            break
+                            directio.write(fd, data)
+                                                
+                        # Get current position like .tell()
+                        self.position = os.lseek(fd, 0, os.SEEK_CUR)
+                        
+                        # DEBUG
+                        if _DEBUG:
+                            print(f'Device: {self.device} Size: {self.size} Bytes written:'
+                                f' {total_bytes_written + _MEGABYTE} Position of FP: {self.position}')
 
-                    # Start again and emit pass
-                    f.seek(0)
-                    if not self.terminated:  # Workaround for the moment
-                        self.position = 0
-                    self.current_round += 1
-                    self.current_pass.emit(f'{str(self.current_round)} / {str(len(self.algo))}')
-                else:
-                    self.terminated = True
-                    break
-            self.finalize.emit(self.tr('Finalize'))
+                        # Set the offset-time
+                        self.offset = max((time.perf_counter() + self.diff_offset) - perf_time, 1)
+
+                        # Calculate percent in python (workaround for QProgressBar qint32)
+                        percent = int((total_bytes_written / self.size) * 100)
+                        self.current_data.emit(percent)
+                        seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))
+                                    ) if total_bytes_written else 0
+                        eta = str(timedelta(seconds=seconds))
+                        mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 1))
+                        self.current_speed.emit(mbps)
+                        self.current_eta.emit(eta)
+                    else:
+                        self.terminated = True
+                        overwritten = round(total_bytes_written / (self.size / 100), 2)
+                        status_msg = self.tr(f'Only {overwritten} overwritten!')
+                        self.current_status_msg.emit(status_msg)
+                        break
+            
+                # Start again and emit pass
+                os.lseek(fd, 0, os.SEEK_SET)
+                if not self.terminated:  # Workaround for the moment
+                    self.position = 0
+                self.current_round += 1
+                self.current_pass.emit(f'{str(self.current_round)} / {str(len(self.algo))}')
+            else:
+                self.terminated = True
+                break
+        self.finalize.emit(self.tr('Finalize'))
 
     def stop(self):
         self.semaphore.acquire()
