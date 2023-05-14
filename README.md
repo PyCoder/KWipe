@@ -46,8 +46,10 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 
 ##### TODO:
 - Implement verify (settings)
+- Implement exclude for utils.py (settings)
 - Implement change language (settings)
 - Clean messy code
 - Fix workaround for self.position
 - Make package with flatpak
 - Create kwipe.desktop with PKExec
+
