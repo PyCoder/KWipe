@@ -177,9 +177,13 @@ Changed removed thread.setPriority from main.py
 Changed from time.time to time.perf_counter
 Changed to f'{} style
 Changed "Creating TableWidget Items" part to use enumerate()
-Changed from open() to directio to increase the speed by up to 4 times
+Changed from open().write() to directio.write() to increase the speed by up to 4 times
 Added exclude devices in settings
 Updated copyright date
 Updated donation.ui
 Fixed crash in case of using a card reader and such
 Fixed glitch in about.ui
+
+3.1.1
+Fixed catching IOError and OSError in main.py thread.run()
+Added error handeling in case the directio.write() crashes
