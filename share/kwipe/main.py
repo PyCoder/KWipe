@@ -240,6 +240,8 @@ class KWipe(QtWidgets.QMainWindow):
             if self.sender() == v[0]:
                 if self.sender().terminated:
                     v[1].setFormat(self.tr('Aborted'))
+                elif self.sender().error:
+                    v[1].setFormat(self.tr('Error'))
                 else:
                     v[1].setFormat(self.tr('Completed'))
                     serial = utils.get_partition_info(k)[1]
@@ -304,8 +306,8 @@ class KWipe(QtWidgets.QMainWindow):
                                                       Please visit:<br><a href=https://github.com/PyCoder/KWipe>
                                                   https://github.com/PyCoder/KWipe</a></center>'''),
                                                       QtWidgets.QMessageBox.StandardButton.Close)
-            except (urllib.error.URLError, urllib.error.HTTPError):
-                pass
+            except (urllib.error.URLError, urllib.error.HTTPError) as _error:
+                print(_error)
 
     def donate(self):
         d = showDonate()
@@ -355,7 +357,7 @@ class Thread(QtCore.QThread):
         limit = int(self.size / _MEGABYTE) * _MEGABYTE
         rest = int(self.size - limit)
         
-        fd = os.open(self.device, os.O_WRONLY|os.O_DIRECT)
+        fd = os.open(self.device, os.O_RDWR|os.O_DIRECT|os.O_SYNC|os.O_NONBLOCK)
         
         # Set current position like seek()
         os.lseek(fd, self.position, os.SEEK_SET)
@@ -370,11 +372,16 @@ class Thread(QtCore.QThread):
                 for total_bytes_written in range(self.position, self.size, _MEGABYTE):
                     if self.semaphore.available():
 
-                        # Write to file/device, flush and fsync it
-                        if total_bytes_written == limit and rest != 0:
-                            directio.write(fd, rest_data)
-                        else:
-                            directio.write(fd, data)
+                        # Write to file/device
+                        try: 
+                            if total_bytes_written == limit and rest != 0:
+                                directio.write(fd, rest_data)
+                            else:
+                                directio.write(fd, data)
+                        except (OSError, IOError) as _error:
+                            self.error = True
+                            print(_error)
+                            break
                                                 
                         # Get current position like .tell()
                         self.position = os.lseek(fd, 0, os.SEEK_CUR)
@@ -393,7 +400,7 @@ class Thread(QtCore.QThread):
                         seconds = int((self.size - total_bytes_written) / (total_bytes_written / (self.offset or 1))
                                     ) if total_bytes_written else 0
                         eta = str(timedelta(seconds=seconds))
-                        mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 1))
+                        mbps = str(round(total_bytes_written / _MEGABYTE / (self.offset or 1), 2))
                         self.current_speed.emit(mbps)
                         self.current_eta.emit(eta)
                     else:
