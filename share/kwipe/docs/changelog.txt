@@ -187,3 +187,7 @@ Fixed glitch in about.ui
 3.1.1
 Fixed catching IOError and OSError in main.py thread.run()
 Added error handeling in case the directio.write() crashes
+
+3.1.2
+Added vertical header
+Removed O_SYNC and O_NONBLOCKING

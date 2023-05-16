@@ -357,7 +357,7 @@ class Thread(QtCore.QThread):
         limit = int(self.size / _MEGABYTE) * _MEGABYTE
         rest = int(self.size - limit)
         
-        fd = os.open(self.device, os.O_RDWR|os.O_DIRECT|os.O_SYNC|os.O_NONBLOCK)
+        fd = os.open(self.device, os.O_RDWR|os.O_DIRECT)
         
         # Set current position like seek()
         os.lseek(fd, self.position, os.SEEK_SET)
