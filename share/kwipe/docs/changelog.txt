@@ -194,3 +194,4 @@ Removed O_SYNC and O_NONBLOCKING
 
 3.1.3
 Fixed self.sender.error() crash in main.py
+Fixed trigger create_device_tree() after finish or cancel to change the status back to ready
