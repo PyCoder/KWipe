@@ -224,6 +224,7 @@ class KWipe(QtWidgets.QMainWindow):
                                  self.control_list[device][0].current_round,
                                  self.control_list[device][0].position,
                                  self.control_list[device][0].offset)
+        self.create_device_tree()
 
     def on_clear(self):
         rows = self.workTableWidget.rowCount()
@@ -247,6 +248,7 @@ class KWipe(QtWidgets.QMainWindow):
                     serial = utils.get_partition_info(k)[1]
                     self.remove_status(serial)
                 del self.control_list[k]
+        self.create_device_tree()
 
     def create_action_menu(self):
         # TreeView Menu
