@@ -191,3 +191,6 @@ Added error handeling in case the directio.write() crashes
 3.1.2
 Added vertical header
 Removed O_SYNC and O_NONBLOCKING
+
+3.1.3
+Fixed self.sender.error() crash in main.py
