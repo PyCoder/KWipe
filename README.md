@@ -51,4 +51,7 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Fix workaround for self.position
 - Make package with flatpak
 - Create kwipe.desktop with PKExec
+- Add option to show/hide row headers
+- Switch to udev/dbus
+- Update dated UI
 
