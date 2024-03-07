@@ -1,4 +1,4 @@
-# KWipe 3.1.2
+# KWipe 3.1.3
 ### KWipe is a secure erase (wipe) application, completely written in PyQt!
 
 ![KWipe 3.1.0](https://github.com/PyCoder/KWipe/blob/master/screenshots/difference.png?raw=true)
