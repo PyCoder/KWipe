@@ -340,6 +340,7 @@ class Thread(QtCore.QThread):
     current_eta = QtCore.pyqtSignal(str)
     current_status_msg = QtCore.pyqtSignal(str)
     finalize = QtCore.pyqtSignal(str)
+    error = False
     terminated = False
 
     def __init__(self, algo, device, size, current_round, position, diff_offset, verify):  # TODO verify
