@@ -49,9 +49,9 @@ Recurva, Testdisk, Photorec, Ontrack Easy Recovery, Stellar Phoenix Linux Data R
 - Implement change language (settings)
 - Clean messy code
 - Fix workaround for self.position
-- Make package with flatpak
+- ~~Make package with flatpak~~ (Not possible without breaking sandbox)
 - Create kwipe.desktop with PKExec
-- Add option to show/hide row headers
+- ~~Add option to show/hide row headers~~
 - Switch to udev/dbus
 - Update dated UI
 
